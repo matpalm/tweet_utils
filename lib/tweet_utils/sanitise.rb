@@ -12,36 +12,27 @@ class String
   end
 
   def duplicate_punctuation_removed
-    gsub(/!+/,'!').gsub(/\.+/,'.')
+    str = self.clone
+    '!.()[]{}|,@$%&*;:"\''.chars.to_a.each do |char|
+      regex = '\\' + char + '+' # weirdity ensues having this inside the actual gsub
+      str.gsub!(/#{regex}/, char)
+    end
+    str
   end
-
-
-=begin  
-  def without_at_names
-    gsub(/@.*\s/,' ')
-  end
-  
-  def with_amps_spaced
-    gsub /&/, ' & '
-  end
-  
-  def without_punctuation
-    gsub(/[\',]/,'').gsub(/[^a-z0-9&@#]/, ' ')
-  end
-=end
 
 end
 
 class Sanitiser
 
   def initialize *options
-    @options = options
+    @without_urls = options.include?(:without_urls)
+    @duplicate_punctuation_removed = options.include?(:duplicate_punctuation_removed)
   end
     
   def sanitise string
     result = string.chomp.downcase
-    result = result.without_urls if @options.include?(:without_urls)
-    result = result.duplicate_punctuation_removed if @options.include?(:duplicate_punctuation_removed)
+    result = result.without_urls if @without_urls
+    result = result.duplicate_punctuation_removed if @duplicate_punctuation_removed
     CGI.unescapeHTML(result.duplicate_spaces_removed.strip)
   end
   
