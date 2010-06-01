@@ -13,7 +13,7 @@ class String
 
   def duplicate_punctuation_removed
     str = self.clone
-    '!.()[]{}|,@$%&*;:"\''.chars.to_a.each do |char|
+    '!.()[]{}|,@$%&*;:"\'\?'.chars.to_a.each do |char|
       regex = '\\' + char + '+' # weirdity ensues having this inside the actual gsub
       str.gsub!(/#{regex}/, char)
     end
